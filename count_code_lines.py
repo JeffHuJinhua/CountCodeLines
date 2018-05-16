@@ -13,6 +13,7 @@ import os
 import sys
 import time
 import datetime
+import itchat
 
 def countcode(path):
     i = 0   # 递归迭代函数中，函数级变量代码定义的位置不对，实现逻辑就会出错
@@ -37,7 +38,13 @@ def countcode(path):
 
     return i    # 递归迭代函数中，return 用于从函数内部传递返回值出来；位置决定递归函数的返回结束！
 
+def send_wx_msg(msg, nickname): #msg: 发送的消息 nickName: 微信昵称
+    itchat.auto_login(hotReload=True) # 微信登录
+    users = itchat.search_friends(name=nickname) #查找微信用户
+    itchat.send(msg, users[0]['UserName'])  #UserName为微信号，是一串很长的字母
 
+
+################### 主程序开始 ###########################
 step = 0
 sum = 0
 
@@ -104,4 +111,11 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     f.writelines(fl)
     f.flush()
 
-    time.sleep(10)
+    if step != 0:
+        send_wx_msg('You have coded '+ str(step) +' rows codes.', '胡珺')
+
+
+    time.sleep(1000)
+
+
+
