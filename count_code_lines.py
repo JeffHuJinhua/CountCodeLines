@@ -9,34 +9,15 @@ v1.180507: 复用函数实现
 v0.180507: 流程语句实现
 '''
 
-import os
 import sys
+import os
 import time
 import datetime
+import codecs
 import wx
+import file_op
 
-def countcode(path):
-    i = 0   # 递归迭代函数中，函数级变量代码定义的位置不对，实现逻辑就会出错
-    pathList = os.listdir(path)
-    for filename in pathList:
-        if os.path.isfile(path + '\\' + filename):
-            if filename.endswith('.py'):    # 用 endswith() 代替 in ，精确匹配，解决读取到 .pyc 文件时的编码报错问题
-                f = open(path + '\\' + filename, encoding = 'utf8')
-                s = f.readline()
-                k = 0
-                while s:
-                    k = k + 1
-                    s = f.readline()
-                i = i + k
 
-                print(path + '\\' + filename + ': ' + str(k))
-        if os.path.isdir(path + '\\' + filename):
-            currentPath = path + '\\' + filename
-            j = countcode(currentPath)
-            if j:
-                i = i + j
-
-    return i    # 递归迭代函数中，return 用于从函数内部传递返回值出来；位置决定递归函数的返回结束！
 
 ################### 主程序开始 ###########################
 step = 0
@@ -46,11 +27,11 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     count = 0
     if len(sys.argv) == 1:
         path = os.getcwd()
-        count = countcode(path)
+        count = file_op.countcode(path)
     else:
         for path in sys.argv[1:]:
             if os.path.exists(path):
-                count = count + countcode(path)
+                count = count + file_op.countcode(path)
             elif path == '-h' or path == '/h':
                 print('Usage: count_code_lines [directory name, [...]]')
                 exit(1)
@@ -65,7 +46,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     # 明明正确的程序一编译就报出语法错误，等等。
     # 可以使用 Sublime Text 编辑器-文件-保存编码-utf-8
 
-    f = open('data.txt', 'r', encoding='utf8')
+    f = codecs.open('data.txt', 'r', encoding=file_op.get_encoding('data.txt'))
     f.seek(0)
     fl = f.readlines()
     s = fl[-1]
@@ -104,10 +85,9 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     f = open('data.txt', 'w', encoding='utf8')
     f.writelines(fl)
     f.flush()
-
+    print('step=' + str(step))
     if step > 0:
-        wx.send_wx_msg('You have coded '+ str(step) +' rows codes.', '胡珺')
-
+        wx.send_wx_msg('You have coded '+ str(step) +' rows codes.', '')
 
     time.sleep(10)
 
