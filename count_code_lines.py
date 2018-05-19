@@ -1,63 +1,38 @@
 '''
-V8.180516: ·¢ËÍÎ¢ÐÅÏûÏ¢
-V7.180515: ·¢ËÍÎ¢ÐÅÏûÏ¢2
-v6.180510: ÎÄ¼þ¼ÇÂ¼Êý¾Ý
-v5.180509: ´úÂëÔöÁ¿ÊµÏÖ
-v4.180508: ºóÌ¨·þÎñÊµÏÖ
-v3.180508: ÃüÁîÐÐ²ÎÊýÊµÏÖ
-v2.180508: º¯ÊýµÝ¹éÊµÏÖ
-v1.180507: ¸´ÓÃº¯ÊýÊµÏÖ
-v0.180507: Á÷³ÌÓï¾äÊµÏÖ
+V8.180516: å‘é€å¾®ä¿¡æ¶ˆæ¯
+V7.180515: å‘é€å¾®ä¿¡æ¶ˆæ¯2
+v6.180510: æ–‡ä»¶è®°å½•æ•°æ®
+v5.180509: ä»£ç å¢žé‡å®žçŽ°
+v4.180508: åŽå°æœåŠ¡å®žçŽ°
+v3.180508: å‘½ä»¤è¡Œå‚æ•°å®žçŽ°
+v2.180508: å‡½æ•°é€’å½’å®žçŽ°
+v1.180507: å¤ç”¨å‡½æ•°å®žçŽ°
+v0.180507: æµç¨‹è¯­å¥å®žçŽ°
 '''
 
-import os
 import sys
+import os
 import time
 import datetime
-import itchat
-
-def countcode(path):
-    i = 0   # µÝ¹éµü´úº¯ÊýÖÐ£¬º¯Êý¼¶±äÁ¿´úÂë¶¨ÒåµÄÎ»ÖÃ²»¶Ô£¬ÊµÏÖÂß¼­¾Í»á³ö´í
-    pathList = os.listdir(path)
-    for filename in pathList:
-        if os.path.isfile(path + '\\' + filename):
-            if filename.endswith('.py'):    # ÓÃ endswith() ´úÌæ in £¬¾«È·Æ¥Åä£¬½â¾ö¶ÁÈ¡µ½ .pyc ÎÄ¼þÊ±µÄ±àÂë±¨´íÎÊÌâ
-                f = open(path + '\\' + filename, encoding = 'utf8')
-                s = f.readline()
-                k = 0
-                while s:
-                    k = k + 1
-                    s = f.readline()
-                i = i + k
-
-                print(path + '\\' + filename + ': ' + str(k))
-        if os.path.isdir(path + '\\' + filename):
-            currentPath = path + '\\' + filename
-            j = countcode(currentPath)
-            if j:
-                i = i + j
-
-    return i    # µÝ¹éµü´úº¯ÊýÖÐ£¬return ÓÃÓÚ´Óº¯ÊýÄÚ²¿´«µÝ·µ»ØÖµ³öÀ´£»Î»ÖÃ¾ö¶¨µÝ¹éº¯ÊýµÄ·µ»Ø½áÊø£¡
-
-def send_wx_msg(msg, nickname): #msg: ·¢ËÍµÄÏûÏ¢ nickName: Î¢ÐÅêÇ³Æ
-    itchat.auto_login(hotReload=True) # Î¢ÐÅµÇÂ¼
-    users = itchat.search_friends(name=nickname) #²éÕÒÎ¢ÐÅÓÃ»§
-    itchat.send(msg, users[0]['UserName'])  #UserNameÎªÎ¢ÐÅºÅ£¬ÊÇÒ»´®ºÜ³¤µÄ×ÖÄ¸
+import codecs
+import wx
+import file_op
 
 
-################### Ö÷³ÌÐò¿ªÊ¼ ###########################
+
+################### ä¸»ç¨‹åºå¼€å§‹ ###########################
 step = 0
 sum = 0
 
-while True: # Ê¹ÓÃwhile True: Ñ­»·ºÍ time ¿âÊµÏÖ¼òµ¥µÄ³ÌÐòºóÌ¨·þÎñ
+while True: # ä½¿ç”¨while True: å¾ªçŽ¯å’Œ time åº“å®žçŽ°ç®€å•çš„ç¨‹åºåŽå°æœåŠ¡
     count = 0
     if len(sys.argv) == 1:
         path = os.getcwd()
-        count = countcode(path)
+        count = file_op.countcode(path)
     else:
         for path in sys.argv[1:]:
             if os.path.exists(path):
-                count = count + countcode(path)
+                count = count + file_op.countcode(path)
             elif path == '-h' or path == '/h':
                 print('Usage: count_code_lines [directory name, [...]]')
                 exit(1)
@@ -65,14 +40,14 @@ while True: # Ê¹ÓÃwhile True: Ñ­»·ºÍ time ¿âÊµÏÖ¼òµ¥µÄ³ÌÐòºóÌ¨·þÎñ
                 print('The Directory ' + path +' do not exist.')
                 exit(2)
 
-    # ÔÚwindowsÆ½Ì¨ÏÂ£¬Ê¹ÓÃÏµÍ³µÄ¼ÇÊÂ±¾ÒÔUTF-8±àÂë¸ñÊ½´æ´¢ÁËÒ»¸öÎÄ±¾ÎÄ¼þ£¬
-    # µ«ÊÇÓÉÓÚMicrosoft¿ª·¢¼ÇÊÂ±¾µÄÍÅ¶ÓÊ¹ÓÃÁËÒ»¸ö·Ç³£¹ÖÒìµÄÐÐÎªÀ´±£´æUTF-8±àÂëµÄÎÄ¼þ£¬
-    # ËüÃÇ×Ô×÷´ÏÃ÷µØÔÚÃ¿¸öÎÄ¼þ¿ªÍ·Ìí¼ÓÁË0xefbbbf£¨Ê®Áù½øÖÆ£©µÄ×Ö·û£¬
-    # ËùÒÔÎÒÃÇ¾Í»áÓöµ½ºÜ¶à²»¿ÉË¼ÒéµÄÎÊÌâ£¬±ÈÈç£¬ÍøÒ³µÚÒ»ÐÐ¿ÉÄÜ»áÏÔÊ¾Ò»¸ö¡°£¿¡±£¬
-    # Ã÷Ã÷ÕýÈ·µÄ³ÌÐòÒ»±àÒë¾Í±¨³öÓï·¨´íÎó£¬µÈµÈ¡£
-    # ¿ÉÒÔÊ¹ÓÃ Sublime Text ±à¼­Æ÷-ÎÄ¼þ-±£´æ±àÂë-utf-8
+    # åœ¨windowså¹³å°ä¸‹ï¼Œä½¿ç”¨ç³»ç»Ÿçš„è®°äº‹æœ¬ä»¥UTF-8ç¼–ç æ ¼å¼å­˜å‚¨äº†ä¸€ä¸ªæ–‡æœ¬æ–‡ä»¶ï¼Œ
+    # ä½†æ˜¯ç”±äºŽMicrosoftå¼€å‘è®°äº‹æœ¬çš„å›¢é˜Ÿä½¿ç”¨äº†ä¸€ä¸ªéžå¸¸æ€ªå¼‚çš„è¡Œä¸ºæ¥ä¿å­˜UTF-8ç¼–ç çš„æ–‡ä»¶ï¼Œ
+    # å®ƒä»¬è‡ªä½œèªæ˜Žåœ°åœ¨æ¯ä¸ªæ–‡ä»¶å¼€å¤´æ·»åŠ äº†0xefbbbfï¼ˆåå…­è¿›åˆ¶ï¼‰çš„å­—ç¬¦ï¼Œ
+    # æ‰€ä»¥æˆ‘ä»¬å°±ä¼šé‡åˆ°å¾ˆå¤šä¸å¯æ€è®®çš„é—®é¢˜ï¼Œæ¯”å¦‚ï¼Œç½‘é¡µç¬¬ä¸€è¡Œå¯èƒ½ä¼šæ˜¾ç¤ºä¸€ä¸ªâ€œï¼Ÿâ€ï¼Œ
+    # æ˜Žæ˜Žæ­£ç¡®çš„ç¨‹åºä¸€ç¼–è¯‘å°±æŠ¥å‡ºè¯­æ³•é”™è¯¯ï¼Œç­‰ç­‰ã€‚
+    # å¯ä»¥ä½¿ç”¨ Sublime Text ç¼–è¾‘å™¨-æ–‡ä»¶-ä¿å­˜ç¼–ç -utf-8
 
-    f = open('data.txt', 'r', encoding='utf8')
+    f = codecs.open('data.txt', 'r', encoding=file_op.get_encoding('data.txt'))
     f.seek(0)
     fl = f.readlines()
     s = fl[-1]
@@ -90,7 +65,7 @@ while True: # Ê¹ÓÃwhile True: Ñ­»·ºÍ time ¿âÊµÏÖ¼òµ¥µÄ³ÌÐòºóÌ¨·þÎñ
 
     count0 = int(lastcodeline)
 
-    print('count = ' + str(count) + '\n')
+    print('count = ' + str(count) + '\n') 
     step = count - count0
     count0 = count
     sum = sum + step
@@ -111,10 +86,9 @@ while True: # Ê¹ÓÃwhile True: Ñ­»·ºÍ time ¿âÊµÏÖ¼òµ¥µÄ³ÌÐòºóÌ¨·þÎñ
     f = open('data.txt', 'w', encoding='utf8')
     f.writelines(fl)
     f.flush()
-
-    if step != 0:
-        send_wx_msg('You have coded '+ str(step) +' rows codes.', 'ºú¬B')
-
+    print('step=' + str(step))
+    if step > 0:
+        wx.send_wx_msg('You have coded '+ str(step) +' rows codes.', '')
 
     time.sleep(10)
 
