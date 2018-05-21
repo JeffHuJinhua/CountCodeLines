@@ -57,26 +57,18 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     day = datetime.datetime.now().day
 
     if file_exist:
-        file = codecs.open(file_name_curr_user, 'r', encoding=file_op.get_encoding(file_name_curr_user))
-        file.seek(0)
-        file_lines = file.readlines()
-
         print('用户' + hostname + ' ' + file_name_curr_user + '文件存在。')
         print('遍历所有data_*.txt文件, 计算工作者提交的代码总量。')
         code_txt_total = 0
         for filename in os.listdir(os.getcwd()):
-            if os.path.isfile(os.getcwd() + '\\' + filename):
-                if 'data' in filename:
-                    f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
-                    f.seek(0)
-                    fl = f.readlines()
-                    s = fl[-1]
-                    l = s.split(',')
-                    lastyear = l[0]
-                    lastmonth = l[1]
-                    lastday = l[2]
-                    lastcodeline = l[3]
-                    code_txt_total += int(lastcodeline)
+            if os.path.isfile(os.getcwd() + '\\' + filename) and 'data' in filename:
+                f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
+                f.seek(0)
+                fl = f.readlines()
+                s = fl[-1]
+                l = s.split(',')
+                lastcodeline = l[3]
+                code_txt_total += int(lastcodeline)
 
         print('txt贡献代码行数为:' + str(code_txt_total))
         step = code_total - code_txt_total
@@ -85,9 +77,17 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         print('You have coded {} rows codes.'.format(step))
         print('=' * 50)
 
-        print(str(day) + '|' + lastday + '|' + str(step))
+        file = codecs.open(file_name_curr_user, 'r', encoding=file_op.get_encoding(file_name_curr_user))
+        file.seek(0)
+        file_lines = file.readlines()
+        l = file_lines[-1].split(',')
+        lastyear = l[0]
+        lastmonth = l[1]
+        lastday = l[2]
+
+
         if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
-            file_lines[-1] = '{},{},{},{}\n'.format(year, month, day, step)
+            file_lines[-1] = '{},{},{},{}\n'.format(year, month, day, int(file_lines[-1].split(',')[3]) + step)
             print('# in the modify')
         else:
             file_lines.append('{},{},{},{}\n'.format(year, month, day, step))
@@ -102,6 +102,8 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         file.write('{},{},{},{}\n'.format(year, month, day, 0))
 
     file.flush()
+    # 不关闭，就不能读
+    file.close()
 
     if step > 0:
         print('自己贡献了' + str(step) + '行代码,发送给自己的微信。')
