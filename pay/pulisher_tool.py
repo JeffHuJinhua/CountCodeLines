@@ -10,14 +10,20 @@ class PayFrame(wx.Frame):
         super(PayFrame, self).__init__(*args, **kw, size=(600,400))
 
         self.pnl = wx.Panel(self)
+        self.make_main_ui()
+        self.makeMenuBar()
+        self.CreateStatusBar()
+        self.SetStatusText("欢迎来到python世界!")
 
+    def make_main_ui(self):
         # 遍历以data开头的txt文件（以后这个是要改的），展示所有程序员push代码的记录。
         upperFolder = os.path.abspath(os.path.join(os.getcwd(), ".."))
         index_line = 0
         cost_money = 0
         for filename in os.listdir(upperFolder):
             if os.path.isfile(upperFolder + '\\' + filename) and 'data' in filename:
-                f = codecs.open(upperFolder + '\\' + filename, 'r', encoding=file_op.get_encoding(upperFolder + '\\' + filename))
+                f = codecs.open(upperFolder + '\\' + filename, 'r',
+                                encoding=file_op.get_encoding(upperFolder + '\\' + filename))
                 f.seek(0)
                 fl = f.readlines()
                 # 遍历文件里每一条记录。
@@ -26,15 +32,11 @@ class PayFrame(wx.Frame):
                     index_line += 1
                 left_money = 10000 - cost_money
 
-        st = wx.StaticText(self.pnl, label="奖池剩余奖金：" + str(left_money), pos=(25,25))
+        st = wx.StaticText(self.pnl, label="奖池剩余奖金：" + str(left_money), pos=(25, 25))
 
         font = st.GetFont()
         font.PointSize += 10
         st.SetFont(font)
-
-        self.makeMenuBar()
-        self.CreateStatusBar()
-        self.SetStatusText("欢迎来到python世界!")
 
     def create_ui_line(self, filename, line, line_number):
 
@@ -80,7 +82,6 @@ class PayFrame(wx.Frame):
     def OnPay(self, event):
         line = event.EventObject.GetName()
         arr_line = line.split("\t")
-        print(str(arr_line))
 
         filename = arr_line[0]
         year = arr_line[1]
@@ -102,6 +103,13 @@ class PayFrame(wx.Frame):
         file.flush()
         # 不关闭，就不能读
         file.close()
+
+        wx.MessageBox("支付状态修改成功！")
+        self.pnl.Refresh()
+        self.make_main_ui()
+
+
+
 
 if __name__ == '__main__':
     app = wx.App()
