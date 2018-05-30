@@ -87,19 +87,19 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
 
 
         if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
-            file_lines[-1] = '{},{},{},{}\n'.format(year, month, day, int(file_lines[-1].split(',')[3]) + step)
+            file_lines[-1] = '{},{},{},{},{}\n'.format(year, month, day, int(file_lines[-1].split(',')[3]) + step, 0)
             print('# in the modify')
         else:
-            file_lines.append('{},{},{},{}\n'.format(year, month, day, step))
+            file_lines.append('{},{},{},{},{}\n'.format(year, month, day, step, 0))
             print('# in the append')
         for s in file_lines:
             print(s, end='')
         file = open(file_name_curr_user, 'w', encoding='utf8')
         file.writelines(file_lines)
     else:
-        print('用户' + hostname + '第一次fork，创建' + file_name_curr_user + '文件,写入' + '{},{},{},{}\n'.format(year, month, day, 0))
+        print('用户' + hostname + '第一次fork，创建' + file_name_curr_user + '文件,写入' + '{},{},{},{},{}\n'.format(year, month, day, 0, 0))
         file = open(file_name_curr_user, 'w', encoding='utf8')
-        file.write('{},{},{},{}\n'.format(year, month, day, 0))
+        file.write('{},{},{},{},{}\n'.format(year, month, day, 0, 0))
 
     file.flush()
     # 不关闭，就不能读
