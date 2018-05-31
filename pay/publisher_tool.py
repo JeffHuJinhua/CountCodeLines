@@ -17,13 +17,14 @@ class PayFrame(wx.Frame):
 
     def make_main_ui(self):
         # 遍历以data开头的txt文件（以后这个是要改的），展示所有程序员push代码的记录。
-        upperFolder = os.path.abspath(os.path.join(os.getcwd(), ".."))
+        upper_folder = os.path.abspath(os.path.join(os.getcwd(), ".."))
         index_line = 0
         cost_money = 0
-        for filename in os.listdir(upperFolder):
-            if os.path.isfile(upperFolder + '\\' + filename) and 'data' in filename:
-                f = codecs.open(upperFolder + '\\' + filename, 'r',
-                                encoding=file_op.get_encoding(upperFolder + '\\' + filename))
+        print(upper_folder)
+        for filename in os.listdir(upper_folder):
+            if os.path.isfile(upper_folder + '\\' + filename) and 'data' in filename:
+                f = codecs.open(upper_folder + '\\' + filename, 'r',
+                                encoding=file_op.get_encoding(upper_folder + '\\' + filename))
                 f.seek(0)
                 fl = f.readlines()
                 # 遍历文件里每一条记录。
@@ -46,7 +47,7 @@ class PayFrame(wx.Frame):
         wx.StaticText(self.pnl, label=label, pos=(30, 60 + line_number * 40), size=(350, 60))
 
         # bug: 为什么data_master.txt第1行判断为False
-        if arr_line[4] == '0':
+        if arr_line[4][0] == '0':
             btn = wx.Button(self.pnl, label='点击付款', pos=(500, 50 + line_number * 40), size=(60, 30), name=label)
             btn.Bind(event=wx.EVT_BUTTON, handler=self.OnPay)
             return 0
@@ -77,7 +78,7 @@ class PayFrame(wx.Frame):
         wx.MessageBox("Hello again wxPython")
 
     def OnAbout(self, event):
-        wx.MessageBox("This is a wxPython Hello World sample!","About Hello World 2", wx.OK|wx.ICON_INFORMATION)
+        wx.MessageBox("This is a wxPython Hello World sample!", "About Hello World 2", wx.OK | wx.ICON_INFORMATION)
 
     def OnPay(self, event):
         line = event.EventObject.GetName()
@@ -105,8 +106,8 @@ class PayFrame(wx.Frame):
         file.close()
 
         wx.MessageBox("支付状态修改成功！")
-        self.pnl.Refresh()
-        self.make_main_ui()
+        #self.pnl.Refresh()
+        #self.make_main_ui()
 
 
 

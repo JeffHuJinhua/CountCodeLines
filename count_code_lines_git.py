@@ -15,7 +15,7 @@ import os
 import time
 import datetime
 import codecs
-import wx
+import wx_op
 import file_op
 import socket
 
@@ -107,6 +107,6 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
 
     if step > 0:
         print('自己贡献了' + str(step) + '行代码,发送给自己的微信。')
-        wx.send_wx_msg('You have coded '+ str(step) +' rows codes.', '')
+        wx_op.send_wx_msg('You have coded ' + str(step) + ' rows codes.', '')
 
     time.sleep(10)
