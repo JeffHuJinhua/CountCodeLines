@@ -11,7 +11,7 @@ class PayFrame(wx.Frame):
 
         self.pnl = wx.Panel(self)
         self.make_main_ui()
-        self.makeMenuBar()
+        self.make_menu_bar()
         self.CreateStatusBar()
         self.SetStatusText("欢迎来到python世界!")
 
@@ -46,41 +46,40 @@ class PayFrame(wx.Frame):
         label = filename + "\t" + arr_line[0] + "\t" + arr_line[1] + "\t" + arr_line[2] + "\t" + arr_line[3]
         wx.StaticText(self.pnl, label=label, pos=(30, 60 + line_number * 40), size=(350, 60))
 
-        # bug: 为什么data_master.txt第1行判断为False
+        # 最后一列有\t\n,所有取值是要去掉。
         if arr_line[4][0] == '0':
             btn = wx.Button(self.pnl, label='点击付款', pos=(500, 50 + line_number * 40), size=(60, 30), name=label)
-            btn.Bind(event=wx.EVT_BUTTON, handler=self.OnPay)
+            btn.Bind(event=wx.EVT_BUTTON, handler=self.on_pay)
             return 0
         else:
             wx.StaticText(self.pnl, label='已付款' + arr_line[3] + '元', pos=(500, 50 + line_number * 40), size=(60, 30))
             return int(arr_line[3])
 
+    def make_menu_bar(self):
+        file_menu = wx.Menu()
+        hello_item = file_menu.Append(-1, "&Hello...\tCtrl-H","Help string shown in status bar for this menu item")
+        file_menu.AppendSeparator()
+        exit_item = file_menu.Append(wx.ID_EXIT)
+        help_menu = wx.Menu()
+        about_item = help_menu.Append(wx.ID_ABOUT)
+        menu_bar = wx.MenuBar()
+        menu_bar.Append(file_menu, "&File")
+        menu_bar.Append(help_menu, "&Help")
+        self.SetMenuBar(menu_bar)
+        self.Bind(wx.EVT_MENU, self.on_hello, hello_item)
+        self.Bind(wx.EVT_MENU, self.on_exit, exit_item)
+        self.Bind(wx.EVT_MENU, self.on_about, about_item)
 
-    def makeMenuBar(self):
-        fileMenu = wx.Menu()
-        helloItem = fileMenu.Append(-1, "&Hello...\tCtrl-H","Help string shown in status bar for this menu item")
-        fileMenu.AppendSeparator()
-        exitItem = fileMenu.Append(wx.ID_EXIT)
-        helpMenu = wx.Menu()
-        aboutItem = helpMenu.Append(wx.ID_ABOUT)
-        menuBar = wx.MenuBar()
-        menuBar.Append(fileMenu, "&File")
-        menuBar.Append(helpMenu, "&Help")
-        self.SetMenuBar(menuBar)
-        self.Bind(wx.EVT_MENU, self.OnHello, helloItem)
-        self.Bind(wx.EVT_MENU, self.OnExit, exitItem)
-        self.Bind(wx.EVT_MENU, self.OnAbout, aboutItem)
-
-    def OnExit(self, event):
+    def on_exit(self, event):
         self.Close(True)
 
-    def OnHello(self, event):
+    def on_hello(self, event):
         wx.MessageBox("Hello again wxPython")
 
-    def OnAbout(self, event):
+    def on_about(self, event):
         wx.MessageBox("This is a wxPython Hello World sample!", "About Hello World 2", wx.OK | wx.ICON_INFORMATION)
 
-    def OnPay(self, event):
+    def on_pay(self, event):
         line = event.EventObject.GetName()
         arr_line = line.split("\t")
 
@@ -93,10 +92,13 @@ class PayFrame(wx.Frame):
         file.seek(0)
         file_lines = file.readlines()
         # 根据当前点击这行的年月日去确定修改文件的哪一行。
+
         for index in range(len(file_lines)):
             l = file_lines[index].split(',')
             if l[0] == year and l[1] == month and l[2] == day:
                 file_lines[index] = '{},{},{},{},{}\n'.format(l[0], l[1], l[2], l[3], 1)
+            else:
+                file_lines[index] = '{},{},{},{},{}\n'.format(l[0], l[1], l[2], l[3], l[4][0])
 
         # 写入文件
         file = open("../" + filename, 'w', encoding='utf8')
@@ -106,9 +108,10 @@ class PayFrame(wx.Frame):
         file.close()
 
         wx.MessageBox("支付状态修改成功！")
-        #self.pnl.Refresh()
-        #self.make_main_ui()
 
+        self.Destroy()
+        frm = PayFrame(None, title='支付小工具')
+        frm.Show()
 
 
 
