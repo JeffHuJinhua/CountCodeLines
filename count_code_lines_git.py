@@ -21,20 +21,26 @@ import socket
 
 
 ################### 主程序开始 ###########################
-step = 0
+push_code = 0
 sum = 0
 hostname = socket.gethostname()
 print('hostname:' + hostname)
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
-    # count代表所有代码行数
     code_total = 0
+    comment_total = 0
+    newline_total = 0
     if len(sys.argv) == 1:
         path = os.getcwd()
-        code_total = file_op.countcode(path)
+        code_total = file_op.count_code(path)
+        comment_total = file_op.count_comment(path)
+        newline_total = file_op.count_newline(path)
     else:
         for path in sys.argv[1:]:
             if os.path.exists(path):
-                code_total = code_total + file_op.countcode(path)
+                code_total = code_total + file_op.count_code(path)
+                comment_total += file_op.count_comment(path)
+                newline_total += file_op.count_newline(path)
+                all_total += file_op.count_all(path)
             elif path == '-h' or path == '/h':
                 print('Usage: count_code_lines [directory name, [...]]')
                 exit(1)
@@ -60,53 +66,65 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         print('用户' + hostname + ' ' + file_name_curr_user + '文件存在。')
         print('遍历所有data_*.txt文件, 计算工作者提交的代码总量。')
         code_txt_total = 0
+        newline_txt_total = 0
+        comment_txt_total = 0
         for filename in os.listdir(os.getcwd()):
             if os.path.isfile(os.getcwd() + '\\' + filename) and 'data' in filename:
+                print('处理文件：' + filename)
                 f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
                 f.seek(0)
-                fl = f.readlines()
-                s = fl[-1]
-                l = s.split(',')
-                lastcodeline = l[3]
-                code_txt_total += int(lastcodeline)
+
+                file_lines = f.readlines()
+                index_last_line = file_op.find_last_line_index(file_lines)
+
+                col = file_lines[index_last_line].split(',')
+                newline_txt_total += int(col[3])
+                comment_txt_total += int(col[4])
+                code_txt_total += int(col[5])
 
         print('txt贡献代码行数为:' + str(code_txt_total))
-        step = code_total - code_txt_total
-        print('自己贡献的代码行数为:' + str(step))
+        push_code = code_total - code_txt_total
+        push_newline = newline_total - newline_txt_total
+        push_comment = comment_total - comment_txt_total
+        print('自己贡献的代码行数为:' + str(push_code))
         print('=' * 50)
-        print('You have coded {} rows codes.'.format(step))
+        print('You have coded {} rows codes.'.format(push_code))
         print('=' * 50)
 
         file = codecs.open(file_name_curr_user, 'r', encoding=file_op.get_encoding(file_name_curr_user))
         file.seek(0)
-        file_lines = file.readlines()
-        l = file_lines[-1].split(',')
-        lastyear = l[0]
-        lastmonth = l[1]
-        lastday = l[2]
-
+        file_lines = file.readlines();
+        index_last_line = file_op.find_last_line_index(file_lines)
+        col = file_lines[index_last_line].split(',')
+        lastyear = col[0]
+        lastmonth = col[1]
+        lastday = col[2]
+        old_push_code = int(col[5])
+        old_push_newline = int(col[3])
+        old_push_comment = int(col[4])
+        pay_status = col[6]
 
         if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
-            file_lines[-1] = '{},{},{},{},{}\n'.format(year, month, day, int(file_lines[-1].split(',')[3]) + step, 0)
+            file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(year, month, day, old_push_newline + push_newline, old_push_comment + push_comment, old_push_code + push_code, pay_status)
             print('# in the modify')
         else:
-            file_lines.append('{},{},{},{},{}\n'.format(year, month, day, step, 0))
+            file_lines.append('{},{},{},{},{},{},{}\n'.format(year, month, day, push_newline, push_comment, push_code, 0))
             print('# in the append')
         for s in file_lines:
             print(s, end='')
         file = open(file_name_curr_user, 'w', encoding='utf8')
         file.writelines(file_lines)
     else:
-        print('用户' + hostname + '第一次fork，创建' + file_name_curr_user + '文件,写入' + '{},{},{},{},{}\n'.format(year, month, day, 0, 0))
+        print('用户' + hostname + '第一次fork，创建' + file_name_curr_user + '文件,写入' + '{},{},{},{},{},{},{}\n'.format(year, month, day, 0, 0, 0, 0))
         file = open(file_name_curr_user, 'w', encoding='utf8')
-        file.write('{},{},{},{},{}\n'.format(year, month, day, 0, 0))
+        file.write('{},{},{},{},{},{},{}\n'.format(year, month, day, 0, 0, 0, 0))
 
     file.flush()
     # 不关闭，就不能读
     file.close()
 
-    if step > 0:
-        print('自己贡献了' + str(step) + '行代码,发送给自己的微信。')
-        wx_op.send_wx_msg('You have coded ' + str(step) + ' rows codes.', '')
+    #if step > 0:
+    #    print('自己贡献了' + str(step) + '行代码,发送给自己的微信。')
+    #    wx_op.send_wx_msg('You have coded ' + str(step) + ' rows codes.', '')
 
-    time.sleep(10)
+    time.sleep(100000)
