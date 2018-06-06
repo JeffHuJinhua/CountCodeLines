@@ -5,9 +5,10 @@ import sys
 sys.path.append("..")
 import file_op
 
+
 class PayFrame(wx.Frame):
     def __init__(self, *args, **kw):
-        super(PayFrame, self).__init__(*args, **kw, size=(600,400))
+        super(PayFrame, self).__init__(*args, **kw, size=(1000,500))
 
         self.pnl = wx.Panel(self)
         self.make_main_ui()
@@ -21,6 +22,7 @@ class PayFrame(wx.Frame):
         index_line = 0
         cost_money = 0
         print(upper_folder)
+        wx.StaticText(self.pnl, label="成员\t\t\t\t年\t\t月\t\t日\t\t空白行\t\t注释行\t\t代码行\t\t是否付款", pos=(30, 80), size=(850, 30))
         for filename in os.listdir(upper_folder):
             if os.path.isfile(upper_folder + '\\' + filename) and 'data' in filename:
                 f = codecs.open(upper_folder + '\\' + filename, 'r',
@@ -29,6 +31,8 @@ class PayFrame(wx.Frame):
                 fl = f.readlines()
                 # 遍历文件里每一条记录。
                 for index in range(len(fl)):
+                    if len(fl[index].strip()) == 0:
+                        continue;
                     cost_money += self.create_ui_line(filename, fl[index], index_line)
                     index_line += 1
                 left_money = 10000 - cost_money
@@ -40,19 +44,26 @@ class PayFrame(wx.Frame):
         st.SetFont(font)
 
     def create_ui_line(self, filename, line, line_number):
-
+        print('create_ui_line:' + line)
         arr_line = line.split(',')
+        dev_name = filename.replace("data_","").replace(".txt", "")
+        label = dev_name + "\t" + arr_line[0] + "\t" + arr_line[1] + "\t" + arr_line[2] + "\t" + arr_line[3]
 
-        label = filename + "\t" + arr_line[0] + "\t" + arr_line[1] + "\t" + arr_line[2] + "\t" + arr_line[3]
-        wx.StaticText(self.pnl, label=label, pos=(30, 60 + line_number * 40), size=(350, 60))
+        wx.StaticText(self.pnl, label=dev_name, pos=(30, 120 + line_number * 40), size=(130, 60))
+        wx.StaticText(self.pnl, label=arr_line[0], pos=(200, 120 + line_number * 40), size=(100, 60))
+        wx.StaticText(self.pnl, label=arr_line[1], pos=(300, 120 + line_number * 40), size=(100, 60))
+        wx.StaticText(self.pnl, label=arr_line[2], pos=(400, 120 + line_number * 40), size=(100, 60))
+        wx.StaticText(self.pnl, label=arr_line[3], pos=(500, 120 + line_number * 40), size=(100, 60))
+        wx.StaticText(self.pnl, label=arr_line[4], pos=(600, 120 + line_number * 40), size=(100, 60))
+        wx.StaticText(self.pnl, label=arr_line[5], pos=(700, 120 + line_number * 40), size=(100, 60))
 
         # 最后一列有\t\n,所有取值是要去掉。
-        if arr_line[4][0] == '0':
-            btn = wx.Button(self.pnl, label='点击付款', pos=(500, 50 + line_number * 40), size=(60, 30), name=label)
+        if arr_line[6][0] == '0':
+            btn = wx.Button(self.pnl, label='点击付款', pos=(800, 110 + line_number * 40), size=(80, 30), name=label)
             btn.Bind(event=wx.EVT_BUTTON, handler=self.on_pay)
             return 0
         else:
-            wx.StaticText(self.pnl, label='已付款' + arr_line[3] + '元', pos=(500, 50 + line_number * 40), size=(60, 30))
+            wx.StaticText(self.pnl, label='已付款' + arr_line[5] + '元', pos=(800, 120 + line_number * 40), size=(80, 30))
             return int(arr_line[3])
 
     def make_menu_bar(self):
@@ -83,7 +94,7 @@ class PayFrame(wx.Frame):
         line = event.EventObject.GetName()
         arr_line = line.split("\t")
 
-        filename = arr_line[0]
+        filename = 'data_' + arr_line[0] + '.txt'
         year = arr_line[1]
         month = arr_line[2]
         day = arr_line[3]
@@ -96,9 +107,7 @@ class PayFrame(wx.Frame):
         for index in range(len(file_lines)):
             l = file_lines[index].split(',')
             if l[0] == year and l[1] == month and l[2] == day:
-                file_lines[index] = '{},{},{},{},{}\n'.format(l[0], l[1], l[2], l[3], 1)
-            else:
-                file_lines[index] = '{},{},{},{},{}\n'.format(l[0], l[1], l[2], l[3], l[4][0])
+                file_lines[index] = '{},{},{},{},{},{},{}\n'.format(l[0], l[1], l[2], l[3], l[4], l[5], 1)
 
         # 写入文件
         file = open("../" + filename, 'w', encoding='utf8')
@@ -112,8 +121,6 @@ class PayFrame(wx.Frame):
         self.Destroy()
         frm = PayFrame(None, title='支付小工具')
         frm.Show()
-
-
 
 if __name__ == '__main__':
     app = wx.App()
