@@ -64,7 +64,7 @@ class PayFrame(wx.Frame):
             return 0
         else:
             wx.StaticText(self.pnl, label='已付款' + arr_line[5] + '元', pos=(800, 120 + line_number * 40), size=(80, 30))
-            return int(arr_line[3])
+            return int(arr_line[5])
 
     def make_menu_bar(self):
         file_menu = wx.Menu()
