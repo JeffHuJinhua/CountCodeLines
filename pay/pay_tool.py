@@ -91,6 +91,11 @@ class PayFrame(wx.Frame):
         wx.MessageBox("This is a wxPython Hello World sample!", "About Hello World 2", wx.OK | wx.ICON_INFORMATION)
 
     def on_pay(self, event):
+
+        if not self.validate_pay():
+
+            return
+
         line = event.EventObject.GetName()
         arr_line = line.split("\t")
 
@@ -121,6 +126,14 @@ class PayFrame(wx.Frame):
         self.Destroy()
         frm = PayFrame(None, title='支付小工具')
         frm.Show()
+
+    def validate_pay(self):
+        count_code_line_git = file_op.count_code('..')
+        count_code_line_txt = file_op.count_code_line_txt('..')
+        if count_code_line_txt != count_code_line_git:
+            wx.MessageBox("txt代码行数{}和git提交的代码行数{}不一致!无法付款。".format(count_code_line_txt, count_code_line_git))
+            return False
+        return True
 
 if __name__ == '__main__':
     app = wx.App()
