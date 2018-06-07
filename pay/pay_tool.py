@@ -21,12 +21,13 @@ class PayFrame(wx.Frame):
         upper_folder = os.path.abspath(os.path.join(os.getcwd(), ".."))
         index_line = 0
         cost_money = 0
+        left_money = 0
         print(upper_folder)
         wx.StaticText(self.pnl, label="成员\t\t\t\t年\t\t月\t\t日\t\t空白行\t\t注释行\t\t代码行\t\t是否付款", pos=(30, 80), size=(850, 30))
         for filename in os.listdir(upper_folder):
-            if os.path.isfile(upper_folder + '\\' + filename) and 'data' in filename:
-                f = codecs.open(upper_folder + '\\' + filename, 'r',
-                                encoding=file_op.get_encoding(upper_folder + '\\' + filename))
+            if os.path.isfile(upper_folder + '/' + filename) and 'data' in filename:
+                f = codecs.open(upper_folder + '/' + filename, 'r',
+                                encoding=file_op.get_encoding(upper_folder + '/' + filename))
                 f.seek(0)
                 fl = f.readlines()
                 # 遍历文件里每一条记录。

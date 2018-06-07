@@ -69,7 +69,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         newline_txt_total = 0
         comment_txt_total = 0
         for filename in os.listdir(os.getcwd()):
-            if os.path.isfile(os.getcwd() + '\\' + filename) and 'data' in filename:
+            if os.path.isfile(os.getcwd() + '/' + filename) and 'data' in filename:
                 print('处理文件：' + filename)
                 f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
                 f.seek(0)
