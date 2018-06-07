@@ -28,11 +28,11 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     count = 0
     if len(sys.argv) == 1:
         path = os.getcwd()
-        count = file_op.countcode(path)
+        count = file_op.count_code(path)
     else:
         for path in sys.argv[1:]:
             if os.path.exists(path):
-                count = count + file_op.countcode(path)
+                count = count + file_op.count_code(path)
             elif path == '-h' or path == '/h':
                 print('Usage: count_code_lines [directory name, [...]]')
                 exit(1)
@@ -51,7 +51,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     f.seek(0)
     fl = f.readlines()
     s = fl[-1]
-    print(s)
+    #print(s)
 
     l = s.split(',')
     lastyear = l[0]
