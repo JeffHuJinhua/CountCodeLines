@@ -108,3 +108,18 @@ def find_last_line_index(lines):
             continue
         else:
             return index
+
+def count_code_line_txt(path):
+    code_sum = 0
+    for filename in os.listdir(path):
+        if os.path.isfile(path + '\\' + filename) and 'data' in filename:
+            f = codecs.open(path + '\\' + filename, 'r',
+                            encoding=get_encoding(path + '\\' + filename))
+            f.seek(0)
+            fl = f.readlines()
+            # 遍历文件里每一条记录。
+            for index in range(len(fl)):
+                if len(fl[index].strip()) == 0:
+                    continue;
+                code_sum += int(fl[index].split(',')[5])
+    return code_sum
