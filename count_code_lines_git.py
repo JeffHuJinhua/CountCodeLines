@@ -25,7 +25,7 @@ push_code = 0
 sum = 0
 hostname = socket.gethostname()
 print('hostname:' + hostname)
-print('test..............')
+
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
     comment_total = 0
