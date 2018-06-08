@@ -55,7 +55,7 @@ def count_newline(path):
 def count_comment(path):
     i = 0   # 递归迭代函数中，函数级变量代码定义的位置不对，实现逻辑就会出错
     path_list = os.listdir(path)
-    print("计算Comment行数")
+
     for filename in path_list:
         if os.path.isfile(path + '/' + filename):
             if filename.endswith('.py'):    # 用 endswith() 代替 in ，精确匹配，解决读取到 .pyc 文件时的编码报错问题
@@ -120,6 +120,7 @@ def count_code_line_txt(path):
             # 遍历文件里每一条记录。
             for index in range(len(fl)):
                 if len(fl[index].strip()) == 0:
-                    continue;
+                    continue
                 code_sum += int(fl[index].split(',')[5])
+                print('code_sum:' + code_sum)
     return code_sum
