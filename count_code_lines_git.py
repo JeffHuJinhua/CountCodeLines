@@ -24,7 +24,13 @@ import socket
 push_code = 0
 sum = 0
 hostname = socket.gethostname()
-print('hostname:' + hostname)
+# mac会出现两个hostname，一个正确的，还有一个加local的。修复：去掉local
+print('代码行数计数程序开始===>')
+print('程序员主机名:' + hostname)
+if '.local' in hostname:
+    print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
+    hostname = hostname.replace('.local', '')
+
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
     comment_total = 0
@@ -69,18 +75,19 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         newline_txt_total = 0
         comment_txt_total = 0
         for filename in os.listdir(os.getcwd()):
-            if os.path.isfile(os.getcwd() + '\\' + filename) and 'data' in filename:
+            if os.path.isfile(os.getcwd() + '/' + filename) and 'data' in filename:
                 print('处理文件：' + filename)
                 f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
                 f.seek(0)
 
                 file_lines = f.readlines()
-                index_last_line = file_op.find_last_line_index(file_lines)
-
-                col = file_lines[index_last_line].split(',')
-                newline_txt_total += int(col[3])
-                comment_txt_total += int(col[4])
-                code_txt_total += int(col[5])
+                for line in file_lines:
+                    if len(line.strip()) == 0:
+                        continue
+                    col = line.split(',')
+                    newline_txt_total += int(col[3])
+                    comment_txt_total += int(col[4])
+                    code_txt_total += int(col[5])
 
         print('txt贡献代码行数为:' + str(code_txt_total))
         push_code = code_total - code_txt_total
@@ -105,13 +112,14 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         pay_status = col[6]
 
         if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
-            file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(year, month, day, old_push_newline + push_newline, old_push_comment + push_comment, old_push_code + push_code, pay_status)
+            file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(
+                year, month, day, old_push_newline + push_newline, old_push_comment + push_comment, old_push_code + push_code, pay_status)
             print('# in the modify')
         else:
             file_lines.append('{},{},{},{},{},{},{}\n'.format(year, month, day, push_newline, push_comment, push_code, 0))
             print('# in the append')
-        for s in file_lines:
-            print(s, end='')
+
+        print(str(file_lines))
         file = open(file_name_curr_user, 'w', encoding='utf8')
         file.writelines(file_lines)
     else:

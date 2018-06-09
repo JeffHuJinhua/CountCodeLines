@@ -21,12 +21,13 @@ class PayFrame(wx.Frame):
         upper_folder = os.path.abspath(os.path.join(os.getcwd(), ".."))
         index_line = 0
         cost_money = 0
+        left_money = 0
         print(upper_folder)
         wx.StaticText(self.pnl, label="成员\t\t\t\t年\t\t月\t\t日\t\t空白行\t\t注释行\t\t代码行\t\t是否付款", pos=(30, 80), size=(850, 30))
         for filename in os.listdir(upper_folder):
-            if os.path.isfile(upper_folder + '\\' + filename) and 'data' in filename:
-                f = codecs.open(upper_folder + '\\' + filename, 'r',
-                                encoding=file_op.get_encoding(upper_folder + '\\' + filename))
+            if os.path.isfile(upper_folder + '/' + filename) and 'data' in filename:
+                f = codecs.open(upper_folder + '/' + filename, 'r',
+                                encoding=file_op.get_encoding(upper_folder + '/' + filename))
                 f.seek(0)
                 fl = f.readlines()
                 # 遍历文件里每一条记录。
@@ -91,6 +92,11 @@ class PayFrame(wx.Frame):
         wx.MessageBox("This is a wxPython Hello World sample!", "About Hello World 2", wx.OK | wx.ICON_INFORMATION)
 
     def on_pay(self, event):
+
+        if not self.validate_pay():
+
+            return
+
         line = event.EventObject.GetName()
         arr_line = line.split("\t")
 
@@ -121,6 +127,14 @@ class PayFrame(wx.Frame):
         self.Destroy()
         frm = PayFrame(None, title='支付小工具')
         frm.Show()
+
+    def validate_pay(self):
+        count_code_line_git = file_op.count_code('..')
+        count_code_line_txt = file_op.count_code_line_txt('..')
+        if count_code_line_txt != count_code_line_git:
+            wx.MessageBox("txt代码行数{}和git提交的代码行数{}不一致!无法付款。".format(count_code_line_txt, count_code_line_git))
+            return False
+        return True
 
 if __name__ == '__main__':
     app = wx.App()
