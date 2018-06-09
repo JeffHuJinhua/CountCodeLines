@@ -28,7 +28,7 @@ hostname = socket.gethostname()
 print('代码行数计数程序开始===>')
 print('程序员主机名:' + hostname)
 if '.local.txt' in hostname
-    print('程序员mac电脑的hostname包含.local.txt字符, 去掉local处理。')
+    print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
     hostname = hostname.replace('.local', '')
 
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
