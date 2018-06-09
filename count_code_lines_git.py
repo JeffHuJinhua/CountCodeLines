@@ -24,7 +24,12 @@ import socket
 push_code = 0
 sum = 0
 hostname = socket.gethostname()
-print('hostname:' + hostname)
+# mac会出现两个hostname，一个正确的，还有一个加local的。修复：去掉local
+print('代码行数计数程序开始===>')
+print('程序员主机名:' + hostname)
+if '.local.txt' in hostname
+    print('程序员mac电脑的hostname包含.local.txt字符, 去掉local处理。')
+    hostname = hostname.replace('.local', '')
 
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
