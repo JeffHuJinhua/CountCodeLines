@@ -27,7 +27,7 @@ hostname = socket.gethostname()
 # mac会出现两个hostname，一个正确的，还有一个加local的。修复：去掉local
 print('代码行数计数程序开始===>')
 print('程序员主机名:' + hostname)
-if '.local.txt' in hostname
+if '.local' in hostname:
     print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
     hostname = hostname.replace('.local', '')
 
