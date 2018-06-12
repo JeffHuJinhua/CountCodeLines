@@ -18,7 +18,7 @@ import codecs
 import wx_op
 import file_op
 import socket
-
+import git
 
 ################### 主程序开始 ###########################
 push_code = 0
@@ -31,7 +31,7 @@ if '.local' in hostname:
     print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
     hostname = hostname.replace('.local', '')
 
-while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
+while False: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
     comment_total = 0
     newline_total = 0
@@ -131,9 +131,23 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     # 不关闭，就不能读
     file.close()
 
+    # 自动提交data文件
+    repo = git.Repo(r'E:\python\git_repository\CountCodeLines')
+    repo.git.add('aa.txt')
+    repo.git.commit('-m', 'this is auto commit')
+    remote = repo.remote()
+    remote.push()
+
     #if step > 0:
     #    print('自己贡献了' + str(step) + '行代码,发送给自己的微信。')
     #    wx_op.send_wx_msg('You have coded ' + str(step) + ' rows codes.', '')
 
     #time.sleep(100000)
     break
+
+repo = git.Repo(r'E:\python\git_repository\CountCodeLines')
+repo.git.add("E:\python\git_repository\CountCodeLines\\aa.txt")
+repo.git.add("E:\python\git_repository\CountCodeLines\\count_code_lines_git.py")
+repo.git.commit('-m', 'this is auto commit')
+remote = repo.remote()
+remote.push()
