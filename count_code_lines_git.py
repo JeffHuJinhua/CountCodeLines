@@ -147,15 +147,16 @@ while False: # 使用while True: 循环和 time 库实现简单的程序后台�
 
 repo = git.Repo('.')
 repo.git.add("./aa.txt")
+'''
 commits = list(repo.iter_commits('master'))
 for i in commits:
     for j in i.stats.files:
         print(j)
-    print("===================")
-
+    print("======================")
+'''
 #print(commits[0])
 #print(commits[0].stats.total)
 #print(commits[0].stats.files)
-#repo.git.commit('-m', 'this is auto commit')
+repo.git.commit('-m', 'this is auto commit 2')
 #remote = repo.remote()
 #remote.push()
