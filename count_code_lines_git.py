@@ -31,7 +31,7 @@ if '.local' in hostname:
     print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
     hostname = hostname.replace('.local', '')
 
-while False: # 使用while True: 循环和 time 库实现简单的程序后台服务
+while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
     comment_total = 0
     newline_total = 0
@@ -145,18 +145,6 @@ while False: # 使用while True: 循环和 time 库实现简单的程序后台�
     #time.sleep(100000)
     break
 
-repo = git.Repo('.')
-repo.git.add("./aa.txt")
-'''
-commits = list(repo.iter_commits('master'))
-for i in commits:
-    for j in i.stats.files:
-        print(j)
-    print("======================")
-'''
-#print(commits[0])
-#print(commits[0].stats.total)
-#print(commits[0].stats.files)
-#repo.git.commit('-m', 'this is auto commit 3')
-#remote = repo.remote()
-#remote.push()
+    repo = git.Repo('.')
+    repo.git.add("./" + file_name_curr_user)
+
