@@ -145,9 +145,17 @@ while False: # 使用while True: 循环和 time 库实现简单的程序后台�
     #time.sleep(100000)
     break
 
-repo = git.Repo(r'E:\python\git_repository\CountCodeLines')
-repo.git.add("E:\python\git_repository\CountCodeLines\\aa.txt")
-repo.git.add("E:\python\git_repository\CountCodeLines\\count_code_lines_git.py")
-repo.git.commit('-m', 'this is auto commit')
-remote = repo.remote()
-remote.push()
+repo = git.Repo('.')
+repo.git.add("./aa.txt")
+commits = list(repo.iter_commits('master'))
+for i in commits:
+    for j in i.stats.files:
+        print(j)
+    print("===================")
+
+#print(commits[0])
+#print(commits[0].stats.total)
+#print(commits[0].stats.files)
+#repo.git.commit('-m', 'this is auto commit')
+#remote = repo.remote()
+#remote.push()
