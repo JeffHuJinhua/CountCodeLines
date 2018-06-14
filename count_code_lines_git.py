@@ -61,7 +61,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     # 明明正确的程序一编译就报出语法错误，等等。
     # 可以使用 Sublime Text 编辑器-文件-保存编码-utf-8
 
-    file_name_curr_user = 'data_' + hostname + '.txt'
+    file_name_curr_user = hostname + '.ccl'
     file_exist = os.path.exists(file_name_curr_user)
 
     year = datetime.datetime.now().year
@@ -70,12 +70,12 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
 
     if file_exist:
         print('用户' + hostname + ' ' + file_name_curr_user + '文件存在。')
-        print('遍历所有data_*.txt文件, 计算工作者提交的代码总量。')
+        print('遍历所有*.count文件, 计算工作者提交的代码总量。')
         code_txt_total = 0
         newline_txt_total = 0
         comment_txt_total = 0
         for filename in os.listdir(os.getcwd()):
-            if os.path.isfile(os.getcwd() + '/' + filename) and 'data' in filename:
+            if os.path.isfile(os.getcwd() + '/' + filename) and filename.endswith('.ccl'):
                 print('处理文件：' + filename)
                 f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
                 f.seek(0)
@@ -131,20 +131,13 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     # 不关闭，就不能读
     file.close()
 
-    # 自动提交data文件
-    repo = git.Repo(r'E:\python\git_repository\CountCodeLines')
-    repo.git.add('aa.txt')
-    repo.git.commit('-m', 'this is auto commit')
-    remote = repo.remote()
-    remote.push()
-
     #if step > 0:
     #    print('自己贡献了' + str(step) + '行代码,发送给自己的微信。')
     #    wx_op.send_wx_msg('You have coded ' + str(step) + ' rows codes.', '')
 
-    #time.sleep(100000)
-    break
-
+    # 自动add程序员的count文件
     repo = git.Repo('.')
     repo.git.add("./" + file_name_curr_user)
 
+    #time.sleep(100000)
+    break
