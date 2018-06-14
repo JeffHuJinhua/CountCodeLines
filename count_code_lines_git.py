@@ -31,22 +31,23 @@ if '.local' in hostname:
     print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
     hostname = hostname.replace('.local', '')
 
+git_base_path = os.path.abspath(os.path.join(os.getcwd(), "../../.."))
+print("git_base_path:" + git_base_path)
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
     comment_total = 0
     newline_total = 0
     if len(sys.argv) == 1:
-        path = os.getcwd()
-        code_total = file_op.count_code(path)
-        comment_total = file_op.count_comment(path)
-        newline_total = file_op.count_newline(path)
+        code_total = file_op.count_code(git_base_path)
+        comment_total = file_op.count_comment(git_base_path)
+        newline_total = file_op.count_newline(git_base_path)
     else:
         for path in sys.argv[1:]:
             if os.path.exists(path):
                 code_total = code_total + file_op.count_code(path)
                 comment_total += file_op.count_comment(path)
                 newline_total += file_op.count_newline(path)
-                all_total += file_op.count_all(path)
+                #all_total += file_op.count_all(path)
             elif path == '-h' or path == '/h':
                 print('Usage: count_code_lines [directory name, [...]]')
                 exit(1)
@@ -61,7 +62,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     # 明明正确的程序一编译就报出语法错误，等等。
     # 可以使用 Sublime Text 编辑器-文件-保存编码-utf-8
 
-    file_name_curr_user = hostname + '.ccl'
+    file_name_curr_user = git_base_path + '/' + hostname + '.ccl'
     file_exist = os.path.exists(file_name_curr_user)
 
     year = datetime.datetime.now().year
@@ -137,9 +138,9 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
 
     # 自动add程序员的count文件
     current_path = os.getcwd()
-    print( os.path.abspath(os.path.join(os.getcwd(), "../../..")))
-    repo = git.Repo(os.path.abspath(os.path.join(os.getcwd(), "../../..")))
-    repo.git.add("./" + file_name_curr_user)
+    print( )
+    repo = git.Repo(git_base_path)
+    repo.git.add(file_name_curr_user) 
 
     #time.sleep(100000)
     break
