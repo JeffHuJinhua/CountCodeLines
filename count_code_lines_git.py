@@ -137,7 +137,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
 
     # 自动add程序员的count文件
     current_path = os.getcwd()
-    print(os.path.abspath(os.path.join(os.getcwd(), "../../..")))
+    print( os.path.abspath(os.path.join(os.getcwd(), "../../..")))
     repo = git.Repo(os.path.abspath(os.path.join(os.getcwd(), "../../..")))
     repo.git.add("./" + file_name_curr_user)
 
