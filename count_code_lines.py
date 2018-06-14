@@ -51,7 +51,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     f.seek(0)
     fl = f.readlines()
     s = fl[-1]
-    #print(s)
+    print(s)
 
     l = s.split(',')
     lastyear = l[0]

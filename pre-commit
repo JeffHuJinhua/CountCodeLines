@@ -8,5 +8,5 @@
 # To enable this hook, rename this file to "pre-commit".
 
 cd .git/hooks/count_code_lines_git/
-count_code_lines_git.exe
+open count_code_lines_git
 exit 0
