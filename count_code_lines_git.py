@@ -140,7 +140,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     current_path = os.getcwd()
     print( )
     repo = git.Repo(git_base_path)
-    repo.git.add(file_name_curr_user)  
+    repo.git.add(file_name_curr_user)
 
     #time.sleep(100000)
     break
