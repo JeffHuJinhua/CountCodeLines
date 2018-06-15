@@ -31,8 +31,16 @@ if '.local' in hostname:
     print('程序员mac电脑的hostname包含.local字符, 去掉.local处理。')
     hostname = hostname.replace('.local', '')
 
-git_base_path = os.path.abspath(os.path.join(os.getcwd(), "../../.."))
+system_type = sys.platform
+git_base_path = ''
+if system_type.startswith('win'):
+    git_base_path = os.path.abspath(os.path.join(os.getcwd(), "../../.."))
+elif system_type == 'darwin':
+    git_base_path = os.path.abspath(os.path.join(sys.MEIPASS, "../../.."))
+else:
+    print('可能是ubuntu系统,代码没有完成。')
 print("git_base_path:" + git_base_path)
+
 while True: # 使用while True: 循环和 time 库实现简单的程序后台服务
     code_total = 0
     comment_total = 0
@@ -152,4 +160,4 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
 
     #time.sleep(100000)
     break
-    
+
