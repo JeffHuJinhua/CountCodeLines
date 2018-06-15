@@ -69,39 +69,53 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     month = datetime.datetime.now().month
     day = datetime.datetime.now().day
 
-    if file_exist:
-        print('用户' + hostname + ' ' + file_name_curr_user + '文件存在。')
-        print('遍历所有*.count文件, 计算工作者提交的代码总量。')
-        code_txt_total = 0
-        newline_txt_total = 0
-        comment_txt_total = 0
-        for filename in os.listdir(os.getcwd()):
-            if os.path.isfile(os.getcwd() + '/' + filename) and filename.endswith('.ccl'):
-                print('处理文件：' + filename)
-                f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
-                f.seek(0)
+    if not file_exist:
+        print('程序员count文件不存在，创建文件。' + file_name_curr_user)
+        file = open(file_name_curr_user, 'w', encoding='utf8')
+        file.close()
 
-                file_lines = f.readlines()
-                for line in file_lines:
-                    if len(line.strip()) == 0:
-                        continue
-                    col = line.split(',')
-                    newline_txt_total += int(col[3])
-                    comment_txt_total += int(col[4])
-                    code_txt_total += int(col[5])
+    print('遍历所有*.ccl文件, 计算工作者提交的代码总量。')
+    code_txt_total = 0
+    newline_txt_total = 0
+    comment_txt_total = 0
+    for filename in os.listdir(git_base_path):
+        filename = git_base_path + '/' + filename
+        if os.path.isfile(filename) and filename.endswith('.ccl'):
+            print('处理文件：' + filename)
+            f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
+            f.seek(0)
 
-        print('txt贡献代码行数为:' + str(code_txt_total))
-        push_code = code_total - code_txt_total
-        push_newline = newline_total - newline_txt_total
-        push_comment = comment_total - comment_txt_total
-        print('自己贡献的代码行数为:' + str(push_code))
-        print('=' * 50)
-        print('You have coded {} rows codes.'.format(push_code))
-        print('=' * 50)
+            file_lines = f.readlines()
+            for line in file_lines:
+                if len(line.strip()) == 0:
+                    continue
+                col = line.split(',')
+                newline_txt_total += int(col[3])
+                comment_txt_total += int(col[4])
+                code_txt_total += int(col[5])
 
-        file = codecs.open(file_name_curr_user, 'r', encoding=file_op.get_encoding(file_name_curr_user))
-        file.seek(0)
-        file_lines = file.readlines();
+    print('txt贡献代码行数为:' + str(code_txt_total))
+    push_code = code_total - code_txt_total
+    push_newline = newline_total - newline_txt_total
+    push_comment = comment_total - comment_txt_total
+    print('自己贡献的代码行数为:' + str(push_code))
+    print('=' * 50)
+    print('You have coded {} rows codes.'.format(push_code))
+    print('=' * 50)
+
+    file = codecs.open(file_name_curr_user, 'r', encoding=file_op.get_encoding(file_name_curr_user))
+    file.seek(0)
+    file_lines = file.readlines();
+
+    lastyear = 0
+    lastmonth = 0
+    lastday = 0
+    old_push_code = 0
+    old_push_newline = 0
+    old_push_comment = 0
+    pay_status = 0
+    if len(file_lines) > 0:
+        print('文件'+file_name_curr_user+'为空')
         index_last_line = file_op.find_last_line_index(file_lines)
         col = file_lines[index_last_line].split(',')
         lastyear = col[0]
@@ -112,21 +126,17 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
         old_push_comment = int(col[4])
         pay_status = col[6]
 
-        if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
-            file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(
-                year, month, day, old_push_newline + push_newline, old_push_comment + push_comment, old_push_code + push_code, pay_status)
-            print('# in the modify')
-        else:
-            file_lines.append('{},{},{},{},{},{},{}\n'.format(year, month, day, push_newline, push_comment, push_code, 0))
-            print('# in the append')
-
-        print(str(file_lines))
-        file = open(file_name_curr_user, 'w', encoding='utf8')
-        file.writelines(file_lines)
+    if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
+        file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(
+            year, month, day, old_push_newline + push_newline, old_push_comment + push_comment, old_push_code + push_code, pay_status)
+        print('# in the modify')
     else:
-        print('用户' + hostname + '第一次fork，创建' + file_name_curr_user + '文件,写入' + '{},{},{},{},{},{},{}\n'.format(year, month, day, 0, 0, 0, 0))
-        file = open(file_name_curr_user, 'w', encoding='utf8')
-        file.write('{},{},{},{},{},{},{}\n'.format(year, month, day, 0, 0, 0, 0))
+        file_lines.append('{},{},{},{},{},{},{}\n'.format(year, month, day, push_newline, push_comment, push_code, 0))
+        print('# in the append')
+
+    print(str(file_lines))
+    file = open(file_name_curr_user, 'w', encoding='utf8')
+    file.writelines(file_lines)
 
     file.flush()
     # 不关闭，就不能读
@@ -137,10 +147,9 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     #    wx_op.send_wx_msg('You have coded ' + str(step) + ' rows codes.', '')
 
     # 自动add程序员的count文件
-    current_path = os.getcwd()
-    print( )
     repo = git.Repo(git_base_path)
     repo.git.add(file_name_curr_user)
 
     #time.sleep(100000)
     break
+    
