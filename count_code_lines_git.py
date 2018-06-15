@@ -79,7 +79,8 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     newline_txt_total = 0
     comment_txt_total = 0
     for filename in os.listdir(git_base_path):
-        if os.path.isfile(git_base_path + '/' + filename) and filename.endswith('.ccl'):
+        filename = git_base_path + '/' + filename
+        if os.path.isfile(filename) and filename.endswith('.ccl'):
             print('处理文件：' + filename)
             f = codecs.open(filename, 'r', encoding=file_op.get_encoding(filename))
             f.seek(0)
@@ -105,15 +106,25 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     file = codecs.open(file_name_curr_user, 'r', encoding=file_op.get_encoding(file_name_curr_user))
     file.seek(0)
     file_lines = file.readlines();
-    index_last_line = file_op.find_last_line_index(file_lines)
-    col = file_lines[index_last_line].split(',')
-    lastyear = col[0]
-    lastmonth = col[1]
-    lastday = col[2]
-    old_push_code = int(col[5])
-    old_push_newline = int(col[3])
-    old_push_comment = int(col[4])
-    pay_status = col[6]
+
+    lastyear = 0
+    lastmonth = 0
+    lastday = 0
+    old_push_code = 0
+    old_push_newline = 0
+    old_push_comment = 0
+    pay_status = 0
+    if len(file_lines) > 0:
+        print('文件'+file_name_curr_user+'为空')
+        index_last_line = file_op.find_last_line_index(file_lines)
+        col = file_lines[index_last_line].split(',')
+        lastyear = col[0]
+        lastmonth = col[1]
+        lastday = col[2]
+        old_push_code = int(col[5])
+        old_push_newline = int(col[3])
+        old_push_comment = int(col[4])
+        pay_status = col[6]
 
     if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
         file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(
