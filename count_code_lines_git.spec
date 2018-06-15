@@ -23,7 +23,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=False )
+          console=True )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -31,7 +31,3 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                name='count_code_lines_git')
-app = BUNDLE(coll,
-             name='count_code_lines_git.app',
-             icon=None,
-             bundle_identifier=None)

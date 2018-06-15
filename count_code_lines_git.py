@@ -36,7 +36,7 @@ git_base_path = ''
 if system_type.startswith('win'):
     git_base_path = os.path.abspath(os.path.join(os.getcwd(), "../../.."))
 elif system_type == 'darwin':
-    git_base_path = os.path.abspath(os.path.join(sys.MEIPASS, "../../.."))
+    git_base_path = os.path.abspath(os.path.join(sys._MEIPASS, "../../.."))
 else:
     print('可能是ubuntu系统,代码没有完成。')
 print("git_base_path:" + git_base_path)

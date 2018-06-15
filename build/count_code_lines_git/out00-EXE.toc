@@ -1,5 +1,5 @@
 ('/Users/hjh/PycharmProjects/CountCodeLines/build/count_code_lines_git/count_code_lines_git',
- False,
+ True,
  False,
  True,
  None,
@@ -39,7 +39,7 @@
  [],
  False,
  False,
- 1528991903,
- [('runw',
-   '/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
+ 1529086033,
+ [('run',
+   '/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/PyInstaller/bootloader/Darwin-64bit/run',
    'EXECUTABLE')])
