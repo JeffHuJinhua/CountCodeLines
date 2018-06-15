@@ -129,7 +129,7 @@ while True: # 使用while True: 循环和 time 库实现简单的程序后台服
     if year == int(lastyear) and month == int(lastmonth) and day == int(lastday):
         file_lines[index_last_line] = '{},{},{},{},{},{},{}'.format(
             year, month, day, old_push_newline + push_newline, old_push_comment + push_comment, old_push_code + push_code, pay_status)
-        print('# in the modify')
+        print('# in the modify') 
     else:
         file_lines.append('{},{},{},{},{},{},{}\n'.format(year, month, day, push_newline, push_comment, push_code, 0))
         print('# in the append')
