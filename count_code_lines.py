@@ -10,6 +10,8 @@ v1.180507: 复用函数实现
 v0.180507: 流程语句实现
 '''
 
+
+#
 import sys
 import os
 import time
@@ -19,7 +21,7 @@ import wx_op
 import file_op
 
 
-
+print('+1')
 ################### 主程序开始 ###########################
 step = 0
 sum = 0
